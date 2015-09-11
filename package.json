@@ -1,0 +1,22 @@
+{
+  "name": "luxserver",
+  "version": "1.0.0",
+  "description": "Websockets server for RobotLux",
+  "main": "luxserver.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "ws": "^0.7.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha --harmony -w",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "npm"
+  ],
+  "author": "Simon Birrell",
+  "license": "Copyright (2) 2015 Simon Birrell"
+}
