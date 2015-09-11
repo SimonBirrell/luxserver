@@ -1,1 +1,1 @@
-web: node --harmony luxserver.js
+web: node --harmony luxserver.js 
