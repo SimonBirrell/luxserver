@@ -24,15 +24,14 @@ exports.launch = function() {
     //Create a server
     httpServer = http.createServer(handleRequest);
 
+    //Lets define a port we want to listen to
+    const PORT=process.env.PORT || 8080; 
 
     //Lets start our server
     httpServer.listen(PORT, function(){
         //Callback triggered when server is successfully listening. Hurray!
         console.log("Server listening on: http://localhost:%s", PORT);
     });
-
-    //Lets define a port we want to listen to
-    const PORT=process.env.PORT || 8080; 
 
     //We need a function which handles requests and send response
     function handleRequest(request, response){
