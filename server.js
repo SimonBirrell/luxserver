@@ -28,10 +28,13 @@ exports.launch = function() {
     const PORT=process.env.PORT || 8080; 
 
     //Lets start our server
+    /*
     httpServer.listen(PORT, function(){
         //Callback triggered when server is successfully listening. Hurray!
         console.log("Server listening on: http://localhost:%s", PORT);
     });
+*/
+    httpServer.listen(PORT);
 
     //We need a function which handles requests and send response
     function handleRequest(request, response){
