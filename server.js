@@ -6,22 +6,21 @@ global.RosInstances = require('./rosinstances.js');
 
 const   serverLog = require('./serverLog'),
         WebSocketServer = require('ws').Server,
+        handleUniversalConnection = require('./handleUniversalConnection.js'),
         handleAgentConnection = require('./handleAgentConnection.js'),
         handleBrowserConnection = require('./handleBrowserConnection.js');
 let     agentServer = null,
         browserServer = null,
         connections = {},
-        clientId = 0;
+        clientId = 0,
+        httpServer = null;
 
 exports.launch = function() {
     
     agentServer = new WebSocketServer({ port: 8000 });
-    agentServer.on('connection', handleAgentConnection.handleAgentConnection);
+    //agentServer.on('connection', handleAgentConnection.handleAgentConnection);
+    agentServer.on('connection', handleUniversalConnection.handleUniversalConnection);
     serverLog('Ready to handle agent connections...');
-    
-    browserServer = new WebSocketServer({ port: 8001 });
-    browserServer.on('connection', handleBrowserConnection.handleBrowserConnection);
-    serverLog('Ready to handle browser connections...');
 
     // All the below is simply to get the server running on Heroku (which require a web port)
     //Lets require/import the HTTP module
@@ -36,15 +35,15 @@ exports.launch = function() {
     }
 
     //Create a server
-    var server = http.createServer(handleRequest);
+    httpServer = http.createServer(handleRequest);
 
-/*
+
     //Lets start our server
-    server.listen(PORT, function(){
+    httpServer.listen(PORT, function(){
         //Callback triggered when server is successfully listening. Hurray!
         console.log("Server listening on: http://localhost:%s", PORT);
     });
-*/
+
     return agentServer;    
 }
 
@@ -54,10 +53,8 @@ exports.shutdown = function() {
         serverLog("Closing Agent socket");
         agentServer.close();
     }
-    if (browserServer) {
-        serverLog("Closing Browser socket");
-        browserServer.close();
-    }
+
+    httpServer.close();
 }
 
 

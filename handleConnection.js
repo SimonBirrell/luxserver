@@ -24,16 +24,23 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if (mtype!=="graphUpd") {
                 serverLog("<- " + JSON.stringify(message));
             }      
-            if (mtype===clientType + 'Connect') {
+            if (mtype==='agentConnect') {
                 rosinstanceId = mbody.rosinstance;
                 orgId = mbody.org;
-                sendMessage(ws, clientType + 'Connected', thisId.toString());
+                sendMessage(ws, 'agentConnected', thisId.toString());
                 authenticated = true;
                 if (typeof clientAuthenticated!=='undefined') {
-                    clientAuthenticated(mbody);
+                    clientAuthenticated(mbody, 'agent');
+                }
+            } else if (mtype==='browserConnect') {
+                rosinstanceId = mbody.rosinstance;
+                orgId = mbody.org;
+                sendMessage(ws, 'browserConnected', thisId.toString());
+                authenticated = true;
+                if (typeof clientAuthenticated!=='undefined') {
+                    clientAuthenticated(mbody, 'browser');
                 }
             } else if (authenticated) {
-                //ﬁserverLog("Interpreting command");
                 interpretCommand(mtype, mbody); 
             } 
 

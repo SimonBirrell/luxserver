@@ -21,7 +21,8 @@ exports.sendToWebsocket = function(ws, mtype, mbody) {
 
 exports.openBrowserSocketAndSend = function(message) {
     const   WebSocket = require('ws'),
-            ws = new WebSocket('ws://localhost:8001');
+            //ws = new WebSocket('ws://localhost:8001');
+            ws = new WebSocket('ws://localhost:8000');
     ws.on('open', function open() {
         ws.send(JSON.stringify(message));
     });
