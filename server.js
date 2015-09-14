@@ -17,22 +17,9 @@ let     agentServer = null,
 
 exports.launch = function() {
     
-    agentServer = new WebSocketServer({ port: 8000 });
-    //agentServer.on('connection', handleAgentConnection.handleAgentConnection);
-    agentServer.on('connection', handleUniversalConnection.handleUniversalConnection);
-    serverLog('Ready to handle agent connections...');
-
     // All the below is simply to get the server running on Heroku (which require a web port)
     //Lets require/import the HTTP module
     var http = require('http');
-
-    //Lets define a port we want to listen to
-    const PORT=process.env.PORT || 8080; 
-
-    //We need a function which handles requests and send response
-    function handleRequest(request, response){
-        response.end('It Works!! Path Hit: ' + request.url);
-    }
 
     //Create a server
     httpServer = http.createServer(handleRequest);
@@ -44,7 +31,20 @@ exports.launch = function() {
         console.log("Server listening on: http://localhost:%s", PORT);
     });
 
-    return agentServer;    
+    //Lets define a port we want to listen to
+    const PORT=process.env.PORT || 8080; 
+
+    //We need a function which handles requests and send response
+    function handleRequest(request, response){
+        response.end('It Works!! Path Hit: ' + request.url);
+    }
+
+    agentServer = new WebSocketServer({ server: httpServer });
+    //agentServer = new WebSocketServer({ port: 8000 });
+    agentServer.on('connection', handleUniversalConnection.handleUniversalConnection);
+    serverLog('Ready to handle agent connections...');
+
+     return agentServer;    
 }
 
 exports.shutdown = function() {
