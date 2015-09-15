@@ -46,7 +46,8 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
 
             if (!authenticated) {
                 serverLog("Unauthorized message received");
-                ws.close(); 
+                serverLog(message);
+                //ws.close(); 
             }
         }
         catch(err) {
