@@ -1,5 +1,8 @@
 "use strict";
 
+var bson = require("bson");
+var BSON = new bson.BSONPure.BSON();
+
 exports.trapMessage = function(ws, testMessage) {
     ws.on('message', function(data) {
         let message = JSON.parse(data),
@@ -9,7 +12,7 @@ exports.trapMessage = function(ws, testMessage) {
         testMessage(mtype, mbody)
     });
 }
-
+ 
 exports.sendToWebsocket = function(ws, mtype, mbody) {
     if (typeof mbody !== 'undefined') {
         ws.send(JSON.stringify({mtype:mtype, mbody:mbody}));
@@ -17,6 +20,18 @@ exports.sendToWebsocket = function(ws, mtype, mbody) {
     else {
         ws.send(JSON.stringify({mtype:mtype}));
     }
+}
+
+exports.sendToWebsocketAsBSON = function(ws, mtype, mbody) {
+    let message = {};
+
+    if (typeof mbody !== 'undefined') {
+        message = {mtype:mtype, mbody:mbody};
+    }
+    else {
+        message = {mtype:mtype};
+    }
+    ws.send(BSON.serialize(message, false, true, false));
 }
 
 exports.openBrowserSocketAndSend = function(message) {

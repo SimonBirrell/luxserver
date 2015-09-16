@@ -139,7 +139,7 @@ mbody: instanceN
 
 graphAdd
 --------
-mtype: graphAdd
+mtype: graphAdd 
 mbody: [[key1, value1], [key2, value2], ... [keyN, valueN]]
 
 graphUpd

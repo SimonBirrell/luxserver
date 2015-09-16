@@ -2,7 +2,9 @@
 
 let clientId = 0;
 const   serverLog = require('./serverLog'),
-        sendMessage = require('./sendMessage');
+        sendMessage = require('./sendMessage'),
+        bson = require("bson"),
+        BSON = new bson.BSONPure.BSON();
 
 exports.handleConnection = function(ws, clientType, interpretCommand, clientAuthenticated, clientClosed) {
     let thisId = clientId++,
@@ -18,7 +20,16 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
 
     ws.on('message', function incoming(data) {
         try {
-            let message = JSON.parse(data);  
+            let messageType = typeof data,
+                message = null;
+            console.log("messageType: " + messageType);
+            if (messageType === 'string') {
+                console.log("json");
+                message = JSON.parse(data);  
+            } else {
+                console.log("bson");
+                message = BSON.deserialize(data);
+            }
             let   mtype = message.mtype,
                   mbody = message.mbody;
             if (mtype!=="graphUpd") {

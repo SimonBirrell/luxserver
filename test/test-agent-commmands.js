@@ -170,5 +170,24 @@ describe('LuxAgent Commands', function() {
             }
         });        
     });
+
+    it('allows BSON as well as JSON', function(done) {
+        let ws = T.authenticateAgent("instance","org","machine","network");
+
+        // Messages recived by dummy agent
+        T.trapMessage(ws, function(mtype, mbody) {
+            
+            if (mtype==='subscribeGraph') {
+                // Agent sends a graph item
+                T.sendToWebsocketAsBSON(ws, 'graphAdd', [['foo', 'bar']]);
+                // After message from agent received, check the ROS instance has been updated
+                setTimeout(function() {
+                    assert((global.RosInstances.RosInstances[0].graph['foo']==='bar'), "JSON from client updates graph");
+                    done();
+                }, 200);
+            }
+
+        });        
+    });
     
 });
