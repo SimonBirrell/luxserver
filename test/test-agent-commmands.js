@@ -44,7 +44,8 @@ describe('LuxAgent Commands', function() {
         });        
     });
     
-    it("should close connection if clients sends any other command without being properly connected", function(done) {
+    // Not closing socket any longer on unauthorized message. Just logging and ignoring it.
+    xit("should close connection if clients sends any other command without being properly connected", function(done) {
         
         let ws = T.openBrowserSocketAndSend({
             mtype:'ping',
