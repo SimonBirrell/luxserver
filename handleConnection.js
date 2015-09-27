@@ -23,10 +23,8 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             let messageType = typeof data,
                 message = null;
             if (messageType === 'string') {
-                console.log("json");
                 message = JSON.parse(data);  
             } else {
-                console.log("bson");
                 message = BSON.deserialize(data);
             }
             let   mtype = message.mtype,
