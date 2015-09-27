@@ -28,6 +28,10 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 message = JSON.parse(data);  
             } else {
                 message = lzw.decode(data);
+                console.log("before ");
+                console.log(data.length);
+                console.log("after ");
+                console.log(message.length);
                 message = BSON.deserialize(message);
             }
             let   mtype = message.mtype,
