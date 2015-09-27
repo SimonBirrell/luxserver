@@ -4,7 +4,9 @@ let clientId = 0;
 const   serverLog = require('./serverLog'),
         sendMessage = require('./sendMessage'),
         bson = require("bson"),
+        lzw = require('node-lzw'),
         BSON = new bson.BSONPure.BSON();
+
 
 exports.handleConnection = function(ws, clientType, interpretCommand, clientAuthenticated, clientClosed) {
     let thisId = clientId++,
@@ -25,7 +27,8 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if (messageType === 'string') {
                 message = JSON.parse(data);  
             } else {
-                message = BSON.deserialize(data);
+                message = lzw.decode(data);
+                message = BSON.deserialize(message);
             }
             let   mtype = message.mtype,
                   mbody = message.mbody;
