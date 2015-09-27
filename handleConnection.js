@@ -30,7 +30,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 message = BSON.deserialize(data);
                 console.log(message);
                 console.log("------");
-                console.log(BSON.deserialize(message.mtype));
+                console.log(message.mtype.buffer);
                 console.log("------");
             }
             let   mtype = message.mtype,
