@@ -4,7 +4,7 @@ let clientId = 0;
 const   serverLog = require('./serverLog'),
         sendMessage = require('./sendMessage'),
         bson = require("bson"),
-        lzw = require('lzwcompress'),
+        lzw = require('../lzw'),
         BSON = new bson.BSONPure.BSON();
 
 
@@ -27,7 +27,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if (messageType === 'string') {
                 message = JSON.parse(data);  
             } else {
-                message = lzw.unpack(data);
+                message = lzw.extend(data);
                 console.log("before ");
                 console.log(data.length);
                 console.log("after ");
