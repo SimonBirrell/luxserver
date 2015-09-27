@@ -22,7 +22,6 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
         try {
             let messageType = typeof data,
                 message = null;
-            console.log("messageType: " + messageType);
             if (messageType === 'string') {
                 console.log("json");
                 message = JSON.parse(data);  
