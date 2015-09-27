@@ -27,7 +27,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if (messageType === 'string') {
                 message = JSON.parse(data);  
             } else {
-                message = lzw.decompress(data);
+                message = lzw.decode(data);
                 console.log("before ");
                 console.log(data.length);
                 console.log("after ");
