@@ -29,7 +29,9 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 console.log("bson");
                 message = BSON.deserialize(data);
                 console.log(message);
+                console.log("------");
                 console.log(message.mtype);
+                console.log("------");
             }
             let   mtype = message.mtype,
                   mbody = message.mbody;
