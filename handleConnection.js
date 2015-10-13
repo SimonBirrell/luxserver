@@ -7,18 +7,37 @@ const   serverLog = require('./serverLog'),
         lzw = require('node-lzw'),
         BSON = new bson.BSONPure.BSON();
 
+// Instantiate this module.
+//      ws - an open websocket stream
+//      clientType - 'browser' or 'agent'. Not currently used.
+//      interpretCommand - a function to interpret the command
+//      clientAuthenticated - a function to call once the client is authenticated
+//      clientClosed - a function to call if the client connection is closed
 
 exports.handleConnection = function(ws, clientType, interpretCommand, clientAuthenticated, clientClosed) {
     let thisId = clientId++,
         authenticated = false,
         rosinstanceId = null,
         orgId = null;
+
+    // Handle a break in the websocket communication by closing down the attached
+    // client (browser or agent)    
         
     ws.on('close', function() {
         if (typeof clientClosed!=='undefined') {
             clientClosed();
         }        
     });    
+
+    // Interpret a message recieved on the universal websocket from either browser or agent.
+    // If the connecting entity is authenticated then pass the message to the already
+    // instantiated handleXConnection object. Oherwise interpret agentConnect and browserConnect
+    // messages as authentication attempts.
+    // Unauthorized messages are ignored and logged.
+    //
+    //      data - a serialized and compressed message
+    //
+    // Any binary objects currently interpreted as BSON and any text objects as JSON.             
 
     ws.on('message', function incoming(data) {
         try {
@@ -57,7 +76,6 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if (!authenticated) {
                 serverLog("Unauthorized message received");
                 serverLog(message);
-                //ws.close(); 
             }
         }
         catch(err) {
