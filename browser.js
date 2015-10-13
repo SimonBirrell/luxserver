@@ -1,18 +1,39 @@
 "use strict";
 
+// (c) 2015 Robot Lux. all Rights Reserved.
+// Written by Simon Birrell.
+
+// This object represents a single browser connected to the server.
+
 const   serverLog = require('./serverLog'),
         sendMessageToWebsocket = require('./sendMessage');
 
+// Represents a browser that has successfully connected to the server.
+// Each browser will potentially connect to all ROS instances within an organization.
+// The Browser adds itself to a global list.
+//
+//      ws - the websocket connection 
+//      mbody - the logon payload, which contains the organization id.
+//
 function Browser(ws, mbody) {    
     this.ws = ws;
     this.setupId(mbody);
     global.Browsers.addBrowser(this);
 }
 
+// Extract and record organization id from logon payload.
+//
+//      mbody - logon payload
+//
 Browser.prototype.setupId = function setupId(mbody) {
     this.orgId = ('org' in mbody) ? mbody['org'] : 'unknown';
 }
 
+// Interpret a command received from the browser.
+//  
+//      mtype - string that defines command 
+//      mbody - command payload
+//
 Browser.prototype.interpretCommand = function interpretCommand(mtype, mbody) {
     if (mtype==='ping') {
         sendMessageToWebsocket(this.ws, 'pong');
@@ -32,19 +53,27 @@ Browser.prototype.interpretCommand = function interpretCommand(mtype, mbody) {
     }        
 }
 
+// Clean up a browser that disconnects. Unsubsscribe from all ROS instance graphs and remove self from
+// global browser list.
+//
 Browser.prototype.close = function() {
     global.RosInstances.unsubscribeFromAllGraphs(this);
     global.Browsers.removeBrowser(this);
 }
 
+// Send a message to the browser from the server.
+//
+//      mtype - string that defines command 
+//      mbody - command payload
+//
 Browser.prototype.sendMessage = function sendMessage(mtype, mbody) {
     //serverLog("browser.sendMessage: " + mtype + " " + JSON.stringify(mbody));
     sendMessageToWebsocket(this.ws, mtype, mbody);
     //serverLog("sent");
 }
-        
+
+// Convenience version of sendMessage.        
 Browser.prototype.sendCompleteMessage = function sendMessage(message) {
-    //serverLog("browser.sendCompleteMessage: " + message.mtype + " " + message.mbody);
     sendMessageToWebsocket(this.ws, message.mtype, message.mbody);
 }
         

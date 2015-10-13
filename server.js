@@ -1,5 +1,8 @@
 "use strict";
 
+// (c) 2015 Robot Lux. all Rights Reserved.
+// Written by Simon Birrell.
+
 // The main module for Lux Server.
 
 global.Agents = require('./agents.js');
@@ -10,8 +13,6 @@ const   serverLog = require('./serverLog'),
         WebSocketServer = require('ws').Server,
         handleUniversalConnection = require('./handleUniversalConnection.js');
 let     universalServer = null,
-        connections = {},
-        clientId = 0,
         httpServer = null;
 
 // Launches the server to handle websocket requests. Both agent and browser connect to the

@@ -1,5 +1,10 @@
 "use strict";
 
+// (c) 2015 Robot Lux. all Rights Reserved.
+// Written by Simon Birrell.
+
+// Handles low-level connection details including serialization and compression.
+
 let clientId = 0;
 const   serverLog = require('./serverLog'),
         sendMessage = require('./sendMessage'),
