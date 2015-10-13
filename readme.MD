@@ -331,6 +331,21 @@ mtype: messageStatus
 error: 
 ```
 
+TODO
+====
+- Add general compression to protocol. Have tried LZW but without success so far (apparent incompatibilities between JS and Python implementations).
+- Add specific, efficient compression for images and streams of images.
+- Add more robust authentication, perhaps involving Rails server.
+- Improve robustness, error trapping in sockets. One connection failure should not bring down other clients. A general failure should crash out directly to let Heroku reboot.
+- Ideally, agents and browsers should be able to invisibly reconnect after server reboot.
+- Test scaling to many simulataneous clients with heavey messaging loads. How big / how many servers needed?
+
+More generally, should meta-information on ROS instances, messages etc. be added here or on the Rails server? Right now, luxserver has no persistent state which is kind of nice.
+
+
+
+
+
 
 
 
