@@ -113,7 +113,7 @@ module.exports = {
             observer.sendMessage('rosInstanceUpdate', {rosInstance: subscribedRosInstanceId, error: "Access forbidden."});                        
         }       
     },
-    
+     
     // Attempt to unsubscribe a subscribed observer from a specified ROS instance. Returns error message
     // if ROS instance doesn't exist or should not be acccessed by observe.
     //

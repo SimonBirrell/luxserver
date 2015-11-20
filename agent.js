@@ -3,7 +3,7 @@
 // This object represents a single agent connected to the server.
 
 const   serverLog = require('./serverLog'),
-        sendMessage = require('./sendMessage');
+        sendMessageToClient = require('./sendMessageToClient');
 
 // Represents an agent that has successfully connected to websocket.
 // Finds or instantiates a rosInstance for the ROS instance represented by the agent. 
@@ -17,15 +17,17 @@ const   serverLog = require('./serverLog'),
 function Agent(ws, mbody) {    
     this.ws = ws;
     this.setupId(mbody);
+    this.name = "Agent " + this.fullMachineId + " " + ws.upgradeReq.connection.remoteAddress;
+
     // Maintain a global list of connected agents.
     global.Agents.addAgent(this);
     this.rosInstance = global.RosInstances.findOrCreateRosInstance(mbody);
     if (this.rosInstance.count===1) {
         // Send subscribe message on 1st agent to connect. Might want to modify this
         // to agent who explicitly defines itself as living on the master machine
-        sendMessage(ws, 'subscribeGraph');            
+        sendMessageToClient(this, 'subscribeGraph');         
     } 
-}
+} 
 
 // Interpret command from this agent.
 //
@@ -37,7 +39,7 @@ function Agent(ws, mbody) {
 Agent.prototype.interpretCommand = function interpretCommand(mtype, mbody) {
     //serverLog("interpretCommand " + mtype);
     if (mtype==='ping') {
-        sendMessage(this.ws, 'pong');
+        sendMessageToClient(this, 'pong');
     } else if (mtype==='graphAdd') {
         this.rosInstance.addToGraph(mbody);
     } else if (mtype==='graphDel') {
@@ -83,7 +85,7 @@ Agent.prototype.setupId = function setupId(mbody) {
 //      args - JSON obejct that contains the command arguments
 //
 Agent.prototype.doCommand = function doCommand(command, sender, args) {
-    sendMessage(this.ws, command, {args: args});
+    sendMessageToClient(this, command, {args: args});
     sender.sendMessage(command + 'Sent', {rosmachine: this.fullMachineId});                        
 }
 
@@ -96,7 +98,7 @@ Agent.prototype.doCommand = function doCommand(command, sender, args) {
 //      mbody - JSON object that will be convereted to ROS message by the agent and published
 //
 Agent.prototype.sendTopicMessage = function sendTopicMessage(command, sender, mbody) {
-    sendMessage(this.ws, command, mbody);
+    sendMessageToClient(this, command, mbody);
 }
 
 // Close down the agent on logoff.

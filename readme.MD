@@ -342,6 +342,9 @@ TODO
 
 More generally, should meta-information on ROS instances, messages etc. be added here or on the Rails server? Right now, luxserver has no persistent state which is kind of nice.
 
+License
+-------
+(c) 2015 Robot Lux. All Rights Reserved.
 
 
 

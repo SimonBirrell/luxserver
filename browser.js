@@ -6,7 +6,7 @@
 // This object represents a single browser connected to the server.
 
 const   serverLog = require('./serverLog'),
-        sendMessageToWebsocket = require('./sendMessage');
+        sendMessageToClient = require('./sendMessageToClient');
 
 // Represents a browser that has successfully connected to the server.
 // Each browser will potentially connect to all ROS instances within an organization.
@@ -18,6 +18,7 @@ const   serverLog = require('./serverLog'),
 function Browser(ws, mbody) {    
     this.ws = ws;
     this.setupId(mbody);
+    this.name = "Browser " + this.orgId + " " + ws.upgradeReq.connection.remoteAddress;
     global.Browsers.addBrowser(this);
 }
 
@@ -36,7 +37,7 @@ Browser.prototype.setupId = function setupId(mbody) {
 //
 Browser.prototype.interpretCommand = function interpretCommand(mtype, mbody) {
     if (mtype==='ping') {
-        sendMessageToWebsocket(this.ws, 'pong');
+        sendMessageToClient(this, 'pong');
     } else if (mtype==='subscribeRosInstances') {
         let addRosInstances = global.RosInstances.updateMessage(this.orgId, 'add');
         this.sendCompleteMessage(addRosInstances);   
@@ -56,7 +57,7 @@ Browser.prototype.interpretCommand = function interpretCommand(mtype, mbody) {
 // Clean up a browser that disconnects. Unsubsscribe from all ROS instance graphs and remove self from
 // global browser list.
 //
-Browser.prototype.close = function() {
+Browser.prototype.close = function() { 
     global.RosInstances.unsubscribeFromAllGraphs(this);
     global.Browsers.removeBrowser(this);
 }
@@ -68,13 +69,13 @@ Browser.prototype.close = function() {
 //
 Browser.prototype.sendMessage = function sendMessage(mtype, mbody) {
     //serverLog("browser.sendMessage: " + mtype + " " + JSON.stringify(mbody));
-    sendMessageToWebsocket(this.ws, mtype, mbody);
+    sendMessageToClient(this, mtype, mbody);
     //serverLog("sent");
 }
 
 // Convenience version of sendMessage.        
 Browser.prototype.sendCompleteMessage = function sendMessage(message) {
-    sendMessageToWebsocket(this.ws, message.mtype, message.mbody);
+    sendMessageToClient(this, message.mtype, message.mbody);
 }
         
 module.exports = Browser;

@@ -23,7 +23,7 @@ module.exports = {
         this.AgentLookup.push(agent);
     },
     
-    // Remove agent from the gobal list.
+    // Remove agent from the global list.
     //
     //      agent - an Agent object
     //

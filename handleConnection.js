@@ -8,6 +8,7 @@
 let clientId = 0;
 const   serverLog = require('./serverLog'),
         sendMessage = require('./sendMessage'),
+        sendMessageToClient = require('./sendMessageToClient'),
         bson = require("bson"),
         lzw = require('node-lzw'),
         BSON = new bson.BSONPure.BSON();

@@ -3,7 +3,7 @@
 // (c) 2015 Robot Lux. all Rights Reserved.
 // Written by Simon Birrell.
 
-// Handles connection to either an agent or a browser (both conenct to the same websocket).
+// Handles connection to either an agent or a browser (both connect to the same websocket).
 // Connected to a single websocket, it interprets authentication messages, instantiates a handler
 // for either browser or client handlers and passes other messages along to them.
 // One handleUniversalConnection object is instantiated for each client that connects.
@@ -16,7 +16,7 @@ const   serverLog = require('./serverLog'),
 // Handle connections.
 //
 //  ws - a websocket listening for clients.
-
+ 
 exports.handleUniversalConnection = function connection(ws) {
     const   handleConnection = require('./handleConnection.js').handleConnection;
     let     rosinstanceId = null,
@@ -67,7 +67,7 @@ exports.handleUniversalConnection = function connection(ws) {
     // Callback from handleConnection when a client logs off or connection breaks.
     //
     function logoff() {
-        serverLog("Logging off agent...");
+        serverLog("Logging off client...");
         if (agent) {
             agent.close();
             agent = null;
