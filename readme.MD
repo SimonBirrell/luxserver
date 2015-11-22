@@ -99,7 +99,7 @@ Reply:
 
 ```
 mtype: rosInstancesUpdate
-mbody: [{add: fullRosInstanceId1}, {add: fullRosInstanceId2}... {add: fullRosInstanceIdN}]
+mbody: [{add: {rosInstanceId: fullRosInstanceId1, rosInstanceHumanId: "foo instance"}}, {add: {rosInstanceId: fullRosInstanceId2, rosInstanceHumanId: "bar instance"}}}... ]
 ```
 
 and as changes occur:
@@ -221,7 +221,7 @@ rosInstanceGraphUpd
 
 ```
 mtype: rosInstanceGraphUpd
-mbody: {graph: [ [node1Name, node1Value], [node2Name, node2Value], ... ]}
+mbody: {rosInstance: rosInstanceId, graph: [ [node1Name, node1Value], [node2Name, node2Value], ... ]}
 ```
 
 node1Value becomes the 'data' attribute of the uiGraph node.

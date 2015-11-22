@@ -81,12 +81,13 @@ describe('Browser Commands', function() {
                     assert((mbody.length===0), '** No rosintances yet');
                 } else if (count===1) {
                     console.log("2nd update mbody: " + JSON.stringify(mbody));                  
-                    assert(mbody.length===1, 'Should return one rosInstance');                    
-                    assert((mbody[0]['add'] === T.buildFullRosInstanceId('eeny', 'theOrg','0') ), 'with proper rosInstanceId');
+                    assert(mbody.length===1, 'Should return one rosInstance');  
+                    assert((mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('eeny', 'theOrg','0')), 'RosInstanceId ok');
+                    assert((mbody[0]['add']['rosInstanceHumanId'] === "foo"), 'RosInstanceId ok');
                 } else if (count===2) {
                     console.log("3rd update mbody: " + JSON.stringify(mbody));                  
                     assert(mbody.length===1, 'Should return another new rosInstance');
-                    assert(mbody[0]['add']  === T.buildFullRosInstanceId('meeny', 'theOrg','0'), 'Should return another new rosInstance');
+                    assert(mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('meeny', 'theOrg','0'), 'Should return another new rosInstance');
                 } else if (count===3) {
                     console.log("4th update mbody: " + JSON.stringify(mbody));                  
                     assert(mbody.length===1, 'Should return a deleted rosInstance');
@@ -138,7 +139,7 @@ describe('Browser Commands', function() {
             if (mtype==='rosInstancesUpdate') {
                 if (count===0) {
                     assert((mbody.length===1), "(mbody.length===1)")                ;
-                    assert((JSON.stringify(mbody[0])===JSON.stringify({'add':'myOrg 0 foo'})), "stringy");
+                    assert((mbody[0]['add']['rosInstanceId']==='myOrg 0 foo'), "stringy");
                     ws3.close();
                 } else if (count===1) {
                     console.log("2nd update mbody: " + mbody.length + " " + JSON.stringify(mbody));                    

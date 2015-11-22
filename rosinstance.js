@@ -30,7 +30,10 @@ function RosInstance(fullRosInstanceId, rosInstanceHumanId, orgId) {
 }
 
 RosInstance.prototype.notifyAddition = function notifyAddition() {
-    global.Browsers.sendToAllBrowsersInOrg('rosInstancesUpdate', [{'add':this.fullRosInstanceId}], this.orgId);        
+    global.Browsers.sendToAllBrowsersInOrg('rosInstancesUpdate', [
+        {'add': {   rosInstanceId: this.fullRosInstanceId,
+                    rosInstanceHumanId: "foo" //this.fullRosInstanceId
+                }}], this.orgId);        
 }
 
 RosInstance.prototype.notifyDeletion = function notifyDeletion() {
