@@ -148,7 +148,14 @@ module.exports = {
     // TODO Not sure this function belongs here.
     updateMessage: function(orgId, updateType) {
         let rosInstances = this.whereOrgIdEquals(orgId);
-        let addRosInstances = rosInstances.map(function(obj) { let o = {}; o[updateType] = {rosInstanceId: obj.fullRosInstanceId, rosInstanceHumanId: "foo"}; return o;});
+        let addRosInstances = rosInstances.map(function(obj) { 
+                                                let o = {}; 
+                                                o[updateType] = {
+                                                    rosInstanceId: obj.fullRosInstanceId, 
+                                                    rosInstanceHumanId: obj.rosInstanceHumanId
+                                                }; 
+                                                return o;
+                                            });
         return {mtype: 'rosInstancesUpdate', mbody: addRosInstances};
     },
     

@@ -44,6 +44,7 @@ exports.handleUniversalConnection = function connection(ws) {
             let Browser = require('./browser');
             browser = new Browser(ws, mbody);
         } else {
+            // TODO: Make a separate security log
             serverLog("HACK WARNING: Bad agent attempted login.");
         }      
     } 
