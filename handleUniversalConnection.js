@@ -22,11 +22,24 @@ exports.handleUniversalConnection = function connection(ws) {
     let     rosinstanceId = null,
             agent = null,
             browser = null,
-            clientType = null;
+            clientType = null,
+            KEEP_ALIVE_PERIOD = 5000;
     
     // Set up handleConnection to call back on receiving a command, logging on or off.
     // handleConnection handles lower-level decompression etc.
     handleConnection(ws, 'unused', interpretCommand, logon, logoff);
+
+    // Heroku kills the server if no activity on websocket for 55 seconds.
+    //
+    function sendKeepAlive() {
+        if (agent) {
+            agent.sendKeepAlive();
+            setTimeout(sendKeepAlive, KEEP_ALIVE_PERIOD);
+        } else if (browser) {
+            browser.sendKeepAlive();
+            setTimeout(sendKeepAlive, KEEP_ALIVE_PERIOD);
+        }
+    }
     
     // Callback from handleConnection when a client has successfully logged on.
     //
@@ -47,11 +60,13 @@ exports.handleUniversalConnection = function connection(ws) {
             // TODO: Make a separate security log
             serverLog("HACK WARNING: Bad agent attempted login.");
         }      
+
+        setTimeout(sendKeepAlive, KEEP_ALIVE_PERIOD);
     } 
     
     // Callback from handleConnection when a client sends a message (apart from logon/off).
     //
-    //      mtyype - string that defines command
+    //      mtype - string that defines command
     //      mbody - command payload
     //      See readme.MD for protocol details
     //

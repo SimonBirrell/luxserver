@@ -101,6 +101,12 @@ Agent.prototype.sendTopicMessage = function sendTopicMessage(command, sender, mb
     sendMessageToClient(this, command, mbody);
 }
 
+// Keep connection alive
+//
+Agent.prototype.sendKeepAlive = function sendKeepAlive() {
+    sendMessageToClient(this, 'keepAlive');
+}
+
 // Close down the agent on logoff.
 // 
 Agent.prototype.close = function() {

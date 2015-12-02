@@ -73,6 +73,12 @@ Browser.prototype.sendMessage = function sendMessage(mtype, mbody) {
     //serverLog("sent");
 }
 
+// Keep connection alive
+//
+Browser.prototype.sendKeepAlive = function sendKeepAlive() {
+    sendMessageToClient(this, 'keepAlive');
+}
+
 // Convenience version of sendMessage.        
 Browser.prototype.sendCompleteMessage = function sendMessage(message) {
     sendMessageToClient(this, message.mtype, message.mbody);
