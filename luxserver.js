@@ -6,5 +6,6 @@
 // The main entry point for Lux Server.
 // Does nothing but call launch() in server.js
 
+require('newrelic');
 const   launch = require('./server.js').launch;
 launch();
