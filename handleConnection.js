@@ -50,7 +50,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             let messageType = typeof data,
                 message = null;
             serverLog("messageType = " + messageType);    
-            if ((messageType === 'string') or true) {
+            if ((messageType === 'string') || true) {
                 message = JSON.parse(data);  
             } else {
                 message = BSON.deserialize(data);
