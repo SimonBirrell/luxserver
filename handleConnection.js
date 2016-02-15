@@ -49,7 +49,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
         try {
             let messageType = typeof data,
                 message = null;
-            serverLog("messageType = " + messageType);    
+            // KLUDGE: BSON stopped working.  
             if ((messageType === 'string') || true) {
                 message = JSON.parse(data);  
             } else {
