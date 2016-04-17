@@ -53,7 +53,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if ((messageType === 'string') || true) {
                 message = JSON.parse(data);  
             } else {
-                message = BSON.deserialize(data);
+                message = BSON.deserialize(data); 
             }
             let   mtype = message.mtype,
                   mbody = message.mbody;

@@ -206,7 +206,7 @@ describe('LuxAgent Commands', function() {
     // This is an early attempt at a more efficient binary protocol.
     // Compression will need to be added, probably specific to the message type.
     // 
-    xit('allows BSON as well as JSON', function(done) {
+    it('allows BSON as well as JSON', function(done) {
         let ws = T.authenticateAgent("instance","org","machine","network");
 
         // Messages recived by dummy agent
