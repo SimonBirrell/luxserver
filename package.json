@@ -5,8 +5,8 @@
   "repository": {
    "type": "git",
     "url": "git://github.com/manacoa/luxserver.git"
-  }
-  "license": "UNLICENSED",
+  },
+  "license":"UNLICENSED",
   "main": "luxserver.js",
   "directories": {
     "test": "test"
