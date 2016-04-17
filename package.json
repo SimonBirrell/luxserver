@@ -2,6 +2,11 @@
   "name": "luxserver",
   "version": "1.0.0",
   "description": "Websockets server for RobotLux",
+  "repository": {
+   "type": "git",
+    "url": "git://github.com/manacoa/luxserver.git"
+  }
+  "license": "UNLICENSED",
   "main": "luxserver.js",
   "directories": {
     "test": "test"
