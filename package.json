@@ -6,7 +6,9 @@
    "type": "git",
     "url": "git://github.com/manacoa/luxserver.git"
   },
-  "license":"UNLICENSED",
+  "bugs": "https://github.com/manacoa/luxserver/issues",
+  "homepage" : "http://www.robotlux.com",
+  "license": "LicenseRef-LICENSE",
   "main": "luxserver.js",
   "directories": {
     "test": "test"
