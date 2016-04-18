@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Websockets server for RobotLux",
   "repository": {
-   "type": "git",
+    "type": "git",
     "url": "git://github.com/manacoa/luxserver.git"
   },
   "bugs": "https://github.com/manacoa/luxserver/issues",
-  "homepage" : "http://www.robotlux.com",
-  "license": "LicenseRef-LICENSE",
+  "homepage": "http://www.robotlux.com",
+  "license": "Copyright (2) 2015 Simon Birrell",
   "main": "luxserver.js",
   "directories": {
     "test": "test"
@@ -19,7 +19,7 @@
     "lzwcompress": "^0.1.6",
     "newrelic": "^1.25.1",
     "node-lzw": "^0.3.1",
-    "ws": "^0.7.2"
+    "ws": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -29,6 +29,5 @@
   "keywords": [
     "npm"
   ],
-  "author": "Simon Birrell",
-  "license": "Copyright (2) 2015 Simon Birrell"
+  "author": "Simon Birrell"
 }

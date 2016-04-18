@@ -49,8 +49,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
         try {
             let messageType = typeof data,
                 message = null;
-            // KLUDGE: BSON stopped working.  
-            if ((messageType === 'string') || true) {
+            if ((messageType === 'string')) {
                 message = JSON.parse(data);  
             } else {
                 message = BSON.deserialize(data); 
@@ -87,7 +86,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
         }
         catch(err) {
             serverLog("ERROR " + err.message);
-            serverLog("Invalid message received: " + data);
+            serverLog("Invalid message received: >" + data + "<");
             console.trace("Stack:");
         }
     });       

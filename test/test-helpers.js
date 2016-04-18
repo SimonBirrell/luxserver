@@ -43,7 +43,7 @@ exports.sendToWebsocketAsBSON = function(ws, mtype, mbody) {
     else {
         message = {mtype:mtype};
     }
-    ws.send(BSON.serialize(message, false, true, false));
+    ws.send(BSON.serialize(message, false, true, false), { binary: true, mask: true });
 }
 
 // Create a socket that represents a pseudo-browser, connect to server and send a message,

@@ -71,7 +71,20 @@ describe('Browser Commands', function() {
     //
     it('should receive a subscribeRosInstances command and send an empty update. Subsequent agent connections will send out updates.', function(done) {
         let ws = T.authenticateBrowser(),
-            count = 0;
+            count = 0,
+            eenyReceived = false,
+            meenyReceived = false,
+            deleteReceived = false;
+
+        var checkMessage = function(mbody) {
+            if ((mbody[0]['add']) && (mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('eeny', 'theOrg','0'))) {
+                eenyReceived = true;
+            } else if ((mbody[0]['add']) && (mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('meeny', 'theOrg','0'))) {
+                meenyReceived = true;
+            } else if (mbody[0]['del']  === T.buildFullRosInstanceId('eeny', 'theOrg','0')) {
+                deleteReceived = true;
+            }
+        }    
 
         T.trapMessage(ws, function(mtype, mbody) {
             console.log("T received " + mtype + " " + mbody);
@@ -82,17 +95,23 @@ describe('Browser Commands', function() {
                 } else if (count===1) {
                     console.log("2nd update mbody: " + JSON.stringify(mbody));                  
                     assert(mbody.length===1, 'Should return one rosInstance');  
-                    assert((mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('eeny', 'theOrg','0')), 'RosInstanceId ok');
+                    checkMessage(mbody);
                     assert((mbody[0]['add']['rosInstanceHumanId'] === "foo"), 'RosInstanceId ok');
                 } else if (count===2) {
                     console.log("3rd update mbody: " + JSON.stringify(mbody));                  
                     assert(mbody.length===1, 'Should return another new rosInstance');
-                    assert(mbody[0]['add']['rosInstanceId'] === T.buildFullRosInstanceId('meeny', 'theOrg','0'), 'Should return another new rosInstance');
+                    checkMessage(mbody);
                 } else if (count===3) {
                     console.log("4th update mbody: " + JSON.stringify(mbody));                  
                     assert(mbody.length===1, 'Should return a deleted rosInstance');
-                    assert(mbody[0]['del']  === T.buildFullRosInstanceId('eeny', 'theOrg','0'), 'Should return another new rosInstance');
-                    done();
+                    //assert(mbody[0]['del']  === T.buildFullRosInstanceId('eeny', 'theOrg','0'), 'Should return another new rosInstance');
+                    checkMessage(mbody);
+                    assert(deleteReceived, 'Delete Received');
+                    assert(eenyReceived, 'Eeny RosInstanceId ok');
+                    assert(meenyReceived, 'Meeny RosInstanceId ok');
+                    if (eenyReceived && meenyReceived && deleteReceived) {
+                        done();
+                    }
                 }
                 count ++;
             }
@@ -409,14 +428,20 @@ describe('Browser Commands', function() {
             agentWs4 = T.authenticateAgent('bar', 'otherOrg', 'mo'),
             browserWs = T.authenticateBrowser('myOrg'),
             targetRosMachineId = T.buildFullMachineId('foo', 'myOrg', 'meeny'),
-            agentReceivedOk = false;    
+            agentReceivedOk = false,
+            browserReceivedOk = false;    
             
         T.trapMessage(browserWs, function(mtype, mbody) {
             // Check that the browser receives acknowledgement
             if (mtype===command + 'Sent') {
-                assert(agentReceivedOk, "agent receives " + command + " first");
-                assert(mbody.rosmachine===targetRosMachineId, command + 'Sent received by browser');
-                done();
+                browserReceivedOk = true;
+                if (agentReceivedOk) {
+                    done();
+                }
+                // assert(agentReceivedOk, "agent receives " + command + " first");
+                // assert(mbody.rosmachine===targetRosMachineId, command + 'Sent received by browser');
+                // console.log("DONE");
+                // done();
             }
         });
 
@@ -425,11 +450,17 @@ describe('Browser Commands', function() {
             if (mtype===command) {
                 assert(mbody.args==='foo/bar', 'args passed correctly to agent');
                 agentReceivedOk = true;
+                if (browserReceivedOk) {
+                    done();
+                }
             }
         });
 
+
+
         // Commands from browser to server
         browserWs.on('open', function() {
+            console.log("SENDING FIRST COMMAND");
             T.sendToWebsocket(browserWs, command, {rosmachine: targetRosMachineId, args: 'foo/bar'});
         });                
     }
