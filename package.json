@@ -23,7 +23,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "mocha --harmony -w",
+    "test": "mocha --harmony",
     "start": "node server.js"
   },
   "keywords": [
