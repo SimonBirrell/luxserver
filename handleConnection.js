@@ -52,7 +52,11 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             if ((messageType === 'string')) {
                 message = JSON.parse(data);  
             } else {
+                serverLog("messageType: ");
+                serverLog(messageType);
+                serverLog(JSON.stringify(data));
                 message = BSON.deserialize(data); 
+                serverLog(JSON.stringify(message));
             }
             let   mtype = message.mtype,
                   mbody = message.mbody;
