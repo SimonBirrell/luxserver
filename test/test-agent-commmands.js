@@ -12,6 +12,7 @@ describe('LuxAgent Commands', function() {
     let receivedConnect = false;              
 
     beforeEach(function() {
+        T.startup();
         server.launch();
     });
     

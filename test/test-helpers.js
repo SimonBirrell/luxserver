@@ -6,6 +6,7 @@
 
 var bson = require("bson");
 var BSON = new bson.BSONPure.BSON();
+var mockery = require('mockery');
 
 // Define a callback to intercept any messages sent from the server to the client 
 // (agent or browser) via websocket ws. This is used to check that the server is returning the 
@@ -129,10 +130,27 @@ exports.displayRosInstances = function () {
     }        
 }
 
+var dummyManagerInterface = {
+    connect: function() {},
+    authenticateAgent: function() {
+        return {
+            valid: true
+        };
+    }
+};    
+
+// Do any high-level mocking
+exports.startup = function() {
+    mockery.enable();
+    mockery.registerMock('managerInterface', dummyManagerInterface);
+
+};
+
 // Clean out the ROS instance list after each test.
 //
 exports.teardown = function() {
     global.RosInstances.empty();
-}
+    mockery.disable();
+};
 
 

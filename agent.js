@@ -22,11 +22,14 @@ function Agent(ws, mbody) {
 
     // Authenticate Agent. If unauthenticated then just return without adding to 
     // global list of agents.
+    managerInterface.connect();
     this.agentInfo = managerInterface.authenticateAgent(mbody);
+    /*
     if (!this.agentInfo.valid) {
         sendMessageToClient(this, 'authenticationFailed');
         return;        
     } 
+    */
 
     // Maintain a global list of connected agents.
     global.Agents.addAgent(this);
