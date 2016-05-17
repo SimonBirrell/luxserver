@@ -94,7 +94,12 @@ exports.authenticateAgent = function(rosinstanceId, orgId, hostnameId, networkId
     
     let ws = this.openAgentSocketAndSend({
         mtype:'agentConnect',
-        mbody:{org:orgId,secret:'bar',rosinstance:rosinstanceId,hostname:hostnameId,network:networkId}
+        mbody:{ org: orgId,
+                user: 'user',
+                secret: 'bar',
+                rosinstance: rosinstanceId,
+                hostname: hostnameId,
+                network: networkId}
     });
     
     return ws;
