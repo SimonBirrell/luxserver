@@ -256,6 +256,13 @@ mtype: agentConnected
 mbody: instanceN
 ```
 
+or
+
+```
+mtype: agentRefused
+mbody: "Human readable error message"
+```
+
 graphAdd
 --------
 

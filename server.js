@@ -11,6 +11,7 @@ global.RosInstances = require('./rosinstances.js');
 
 const   serverLog = require('./serverLog'),
         WebSocketServer = require('ws').Server,
+        managerInterface = require('./managerInterface'),
         handleUniversalConnection = require('./handleUniversalConnection.js');
 let     universalServer = null,
         httpServer = null;
@@ -42,6 +43,9 @@ exports.launch = function() {
     universalServer = new WebSocketServer({ server: httpServer });
     universalServer.on('connection', handleUniversalConnection.handleUniversalConnection);
     serverLog('Ready to handle agent connections...');
+
+    // Connect to REDIS
+    managerInterface.connect();
 
     return universalServer;    
 }

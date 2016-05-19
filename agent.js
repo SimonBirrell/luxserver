@@ -3,8 +3,7 @@
 // This object represents a single agent connected to the server.
 
 const   serverLog = require('./serverLog'),
-        sendMessageToClient = require('./sendMessageToClient'),
-        managerInterface = require('./managerInterface');
+        sendMessageToClient = require('./sendMessageToClient');
 
 // Represents an agent that has successfully connected to websocket.
 // Finds or instantiates a rosInstance for the ROS instance represented by the agent. 
@@ -19,17 +18,6 @@ function Agent(ws, mbody) {
     this.ws = ws;
     this.setupId(mbody);
     this.name = "Agent " + this.fullMachineId + " " + ws.upgradeReq.connection.remoteAddress;
-
-    // Authenticate Agent. If unauthenticated then just return without adding to 
-    // global list of agents.
-    managerInterface.connect();
-    this.agentInfo = managerInterface.authenticateAgent(mbody);
-    /*
-    if (!this.agentInfo.valid) {
-        sendMessageToClient(this, 'authenticationFailed');
-        return;        
-    } 
-    */
 
     // Maintain a global list of connected agents.
     global.Agents.addAgent(this);

@@ -11,7 +11,8 @@ const   serverLog = require('./serverLog'),
         sendMessageToClient = require('./sendMessageToClient'),
         bson = require("bson"),
         lzw = require('node-lzw'),
-        BSON = new bson.BSONPure.BSON();
+        BSON = new bson.BSONPure.BSON(),
+        managerInterface = require('./managerInterface');
 
 // Instantiate this module.
 //      ws - an open websocket stream
@@ -64,12 +65,27 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 serverLog("<- " + JSON.stringify(message));
             }      
             if (mtype==='agentConnect') {
-                rosinstanceId = mbody.rosinstance;
-                orgId = mbody.org;
-                sendMessage(ws, 'agentConnected', thisId.toString());
-                authenticated = true;
                 if (typeof clientAuthenticated!=='undefined') {
-                    clientAuthenticated(mbody, 'agent');
+                    managerInterface.authenticateAgent(mbody, function(agentInfo) {
+                        if (agentInfo) {
+                            serverLog("AUTHENTICATED");
+                            // Make up login info combining client-sent data with
+                            // trusted data from LuxManager.
+                            var logonInfo = getLogonInfo(mbody, agentInfo);
+                            serverLog(logonInfo);
+                            sendMessage(ws, 'agentConnected', thisId.toString());
+                            authenticated = true;
+                            clientAuthenticated(logonInfo, 'agent', agentInfo);
+                        } else {
+                            // Send back connection refused
+                            serverLog("AUTHENTICATION FAILED");
+                            sendMessage(ws, 'agentRefused', {
+                                errorMessage: 'Invalid agent credentials.',
+                                errorCode: 'ERR_INVALID_CREDENTIALS'
+                            });
+                            clientClosed();
+                        }
+                    });
                 }
             } else if (mtype==='browserConnect') {
                 rosinstanceId = mbody.rosinstance;
@@ -82,17 +98,26 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             } else if (authenticated) {
                 interpretCommand(mtype, mbody); 
             } 
-
-            if (!authenticated) {
-                serverLog("Unauthorized message received");
-                serverLog(message);
-            }
         }
         catch(err) {
             serverLog("ERROR " + err.message);
             serverLog("Invalid message received: >" + data + "<");
             console.trace("Stack:");
         }
-    });       
+    });     
+
+    // Get the definitive logon info by combining untrusted
+    // data received from client with the trusted data received from
+    // LuxManager.
+    //
+    function getLogonInfo(mbody, agentInfo) {
+        return {
+            org: agentInfo['org_slug'],
+            network: agentInfo['network'],
+            hostname: mbody['hostname'],
+            rosinstance: mbody['rosinstance'],
+            rosinstanceHuman: mbody['rosinstanceHuman']
+        };
+    }  
     
 }

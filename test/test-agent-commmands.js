@@ -48,6 +48,20 @@ describe('LuxAgent Commands', function() {
             }
         });        
     });
+
+    // An agent that sends the wrong credentials should be refused
+    it('should refuse an agent that sends incorrect authentication details', function(done) {
+        let ws = T.authenticateAgent("instance","org","machine","network","wrong_user","****");
+
+        T.trapMessage(ws, function(mtype, mbody) {
+            assert((mtype!=='agentConnected'), 'should not be connected');
+            assert((mtype==='agentRefused'), 'connection should be explicitly refused');
+            assert((mbody['errorMessage']==='Invalid agent credentials.'), 'should send human-readable error message');
+            assert((mbody['errorCode']==='ERR_INVALID_CREDENTIALS'), 'should send machine-readable error code');
+            done();
+        });            
+
+    });
     
     // Disabled.
     // Not closing socket any longer on unauthorized message. Just logging and ignoring it.

@@ -8,6 +8,29 @@ var bson = require("bson");
 var BSON = new bson.BSONPure.BSON();
 var mockery = require('mockery');
 
+// Mock out REDIS server for tests
+var dummyRedisFakeStore = {},
+    dummyRedis = {
+        // Keep register of keys and values
+        addAgentInfo: function(key, agentInfo) {
+            key = "robotlux:agent:" + key;
+            dummyRedisFakeStore[key] = JSON.stringify(agentInfo);
+        },
+        createClient: function() {
+            console.log("Creating FAKE REDIS");
+            return {
+                get: function(key, callback) {
+                    var value = dummyRedisFakeStore[key];
+                    if (value) {
+                        callback(null, value);                            
+                    } else {
+                        callback(null, null);
+                    }
+                }
+            };
+        }
+    };
+
 // Define a callback to intercept any messages sent from the server to the client 
 // (agent or browser) via websocket ws. This is used to check that the server is returning the 
 // messages that we expect it should.
@@ -86,24 +109,44 @@ exports.authenticateBrowser = function(orgId) {
 
 // Creates a pseudo-agent and authenticates it against the server.
 // Returns the websocket so further messages can be sent to server.
+// Sets the agent data in the Fake REDIS store.
 //
-exports.authenticateAgent = function(rosinstanceId, orgId, hostnameId, networkId) {
+exports.authenticateAgent = function(rosinstanceId, orgId, hostnameId, networkId, user, secret) {
     rosinstanceId = (typeof rosinstanceId!=='undefined') ? rosinstanceId : 'anInstance'
     orgId = (typeof orgId!=='undefined') ? orgId : 'theOrg'
     hostnameId = (typeof hostnameId!=='undefined') ? hostnameId : 'theHostname'
     networkId = (typeof networkId!=='undefined') ? networkId : '0'
-    
+    user = (typeof user!=='undefined') ? user : 'user' + randomString();
+    secret = (typeof secret!=='undefined') ? secret : 'bar' + randomString();
+    var username = user + '@robotlux.orgs.robotlux.com';
+    var agentInfo = {
+                        slug: user,
+                        username: username,
+                        org_slug: orgId,
+                        network: networkId
+                    };
+
+    dummyRedis.addAgentInfo(secret, agentInfo);
+
+    // Test incorrect password by passing '****'
+    secret = (secret=='****') ? 'incorrect_password' : secret;
+
     let ws = this.openAgentSocketAndSend({
         mtype:'agentConnect',
         mbody:{ org: orgId,
-                user: 'user',
-                secret: 'bar',
+                user: user,
+                username: username,
+                secret: secret,
                 rosinstance: rosinstanceId,
                 hostname: hostnameId,
                 network: networkId}
     });
     
     return ws;
+}
+
+function randomString() {
+    return Math.floor((Math.random() * 100000)).toString();
 }
 
 // Convert parameters into a fully-qualified machine id.
@@ -130,20 +173,14 @@ exports.displayRosInstances = function () {
     }        
 }
 
-var dummyManagerInterface = {
-    connect: function() {},
-    authenticateAgent: function() {
-        return {
-            valid: true
-        };
-    }
-};    
-
 // Do any high-level mocking
 exports.startup = function() {
-    mockery.enable();
-    mockery.registerMock('managerInterface', dummyManagerInterface);
-
+    mockery.enable({
+        warnOnReplace: false,
+        warnOnUnregistered: false
+    });
+    mockery.registerMock('redis', dummyRedis);
+    //dummyRedis.addAgentInfo('robotlux:agent:bar', dummyAgentInfo);
 };
 
 // Clean out the ROS instance list after each test.

@@ -5,22 +5,26 @@
 
 // Communication with REDIS that stores authentication details
 
-var redisClient = null;
+const   serverLog = require('./serverLog');
+
+var 	redisClient = null;
 
 exports.connect = function() {
+	serverLog("");
+	serverLog("Connecting to REDIS...");
+	serverLog("");
 	redisClient = require('redis').createClient(process.env.REDIS_URL);
 }
 
-exports.authenticateAgent = function(mbody) {
-	var invalidInfo = {
-		valid: false,
-		error: "No error defined"
-	};
+exports.authenticateAgent = function(mbody, callback) {
+	if (!redisClient) {
+		throw "REDIS not connected.";
+	}
 
 	// Check we have credentials
-	var user = mbody['user'],
+	var username = mbody['username'],
 		secret = mbody['secret'];
-	if ((!user)||(!secret)) {
+	if ((!username)||(!secret)) {
 		invalidInfo['error'] = "Missing user or secret";
 		return invalidInfo; 
 	}
@@ -29,20 +33,26 @@ exports.authenticateAgent = function(mbody) {
 	var key = "robotlux:agent:" + secret;
 
 	redisClient.get(key, function(err, reply) {
-		console.log(reply);
 		if (reply) {
-
+			serverLog("REDIS reply ok");
+			var agentInfo = JSON.parse(reply);
+			serverLog(agentInfo);
+			if (agentInfo['username']===username) {
+				callback(agentInfo);
+			} else {
+				serverLog("username didn't match");
+				serverLog("agent sent username:");
+				serverLog(username);				
+				serverLog("agentInfo username:");
+				serverLog(agentInfo['username']);
+				callback(false);
+			}
 		} else {
-
+			serverLog("REDIS replied NULL");
+			callback(false);
 		}
 	});
-
-	var agentInfo = {
-		valid: true
-	}
-
-	console.log("********* Authenticating agent **************");
-
-	return agentInfo;
+	
+	return;
 }
 

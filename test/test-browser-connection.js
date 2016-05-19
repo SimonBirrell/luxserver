@@ -11,6 +11,7 @@ describe('Browser Commands', function() {
             T = require('./test-helpers');        
 
     beforeEach(function() {
+        T.startup();
         global.Agents.reset();
         global.Browsers.reset();      
         server.launch();
@@ -161,8 +162,11 @@ describe('Browser Commands', function() {
                     assert((mbody[0]['add']['rosInstanceId']==='myOrg 0 foo'), "stringy");
                     ws3.close();
                 } else if (count===1) {
-                    console.log("2nd update mbody: " + mbody.length + " " + JSON.stringify(mbody));                    
-                    assert(((mbody.length===1) && (mbody[0]==={add:'myOrg 0 foo'})), 'Should return one rosInstance');                    
+                    console.log("2nd update mbody: " + mbody.length + " " + JSON.stringify(mbody));  
+                    console.log(mtype);
+                    console.log(mbody);                  
+                    //assert(((mbody.length===1) && (mbody[0]==={add:'myOrg 0 foo'})), 'Should return one rosInstance');                    
+                    assert(((mbody.length===1) && (mbody[0]['add']==='myOrg 0 foo')), 'Should return one rosInstance');                    
                 }
                 count ++;
             }
@@ -251,6 +255,8 @@ describe('Browser Commands', function() {
         T.trapMessage(ws, function(mtype, mbody) {
             if (count===1) {
                 // First, the browser receives rosInstanceGraph - The full graph of the ROS instance
+                console.log(mtype);
+                console.log(mbody);
                 assert(mtype==='rosInstanceGraph', 'received full graph');
                 let updatedRosInstance = mbody.rosInstance;
                 assert(updatedRosInstance === targetRosInstance, 'Correct rosInstance');
