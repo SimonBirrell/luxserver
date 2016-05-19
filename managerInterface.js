@@ -22,7 +22,7 @@ exports.authenticateAgent = function(mbody, callback) {
 	}
 
 	// Check we have credentials
-	var username = mbody['user'],
+	var username = mbody['username'],
 		secret = mbody['secret'];
 	if ((!username)||(!secret)) {
 		serverLog("Username and/or secret missing.");
@@ -40,11 +40,13 @@ exports.authenticateAgent = function(mbody, callback) {
 			var agentInfo = JSON.parse(reply);
 			serverLog(agentInfo);
 			if (agentInfo['username']===username) {
+				serverLog("agent sent username:");
+				serverLog(username);				
 				callback(agentInfo);
 			} else {
 				serverLog("username didn't match");
-				serverLog("agent sent username:");
-				serverLog(username);				
+				serverLog("Derived username");
+				serverLog(usernameFromUser);
 				serverLog("agentInfo username:");
 				serverLog(agentInfo['username']);
 				callback(false);
