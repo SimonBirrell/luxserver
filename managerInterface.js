@@ -22,12 +22,11 @@ exports.authenticateAgent = function(mbody, callback) {
 	}
 
 	// Check we have credentials
-	var username = mbody['username'],
+	var username = mbody['user'],
 		secret = mbody['secret'];
 	if ((!username)||(!secret)) {
 		serverLog("Username and/or secret missing.");
-		serverLog(username);
-		serverLog(secret);
+		serverLog(mbody);
 		var invalidInfo = {error: "Missing user or secret"};
 		return invalidInfo; 
 	}
