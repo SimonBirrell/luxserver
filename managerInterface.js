@@ -25,6 +25,9 @@ exports.authenticateAgent = function(mbody, callback) {
 	var username = mbody['username'],
 		secret = mbody['secret'];
 	if ((!username)||(!secret)) {
+		serverLog("Username and/or secret missing.");
+		serverLog(username);
+		serverLog(secret);
 		var invalidInfo = {error: "Missing user or secret"};
 		return invalidInfo; 
 	}
