@@ -49,6 +49,8 @@ describe('Browser Commands', function() {
         let ws = T.authenticateBrowser();
 
         T.trapMessage(ws, function(mtype, mbody) {
+            console.log(">>>>>>>>");
+            console.log(mtype);
             assert((mtype==='browserConnected'), 'Correct mtype');
             done();
          });

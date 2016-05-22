@@ -121,7 +121,7 @@ exports.authenticateBrowser = function(orgId, user, secret) {
     var dataToSend = {
                 org: orgId,
                 user: user,
-                username: username,
+                email: username,
                 secret: secret,
                 rosinstance: 'baz'
         };

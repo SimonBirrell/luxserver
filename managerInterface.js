@@ -29,8 +29,10 @@ function authenticateUniversal(mbody, callback, clientType) {
 		throw "REDIS not connected.";
 	}
 
+	var usernameKey = (clientType === 'agent') ? 'username' : 'email';
+
 	// Check we have credentials
-	var username = mbody['username'],
+	var username = mbody[usernameKey],
 		secret = mbody['secret'];
 	if ((!username)||(!secret)) {
 		serverLog("Username and/or secret missing.");
@@ -40,8 +42,6 @@ function authenticateUniversal(mbody, callback, clientType) {
 
 	// Interrogate REDIS for key
 	var key = "robotlux:" + clientType + ":" + secret;
-
-	var usernameKey = (clientType === 'agent') ? 'username' : 'email';
 
 	redisClient.get(key, function(err, reply) {
 		if (reply) {
