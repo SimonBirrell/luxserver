@@ -42,21 +42,23 @@ function authenticateUniversal(mbody, callback, clientType) {
 	// Interrogate REDIS for key
 	var key = "robotlux:" + clientType + ":" + secret;
 
+	var usernameKey = (clientType === 'agent') ? 'username' : 'email';
+
 	redisClient.get(key, function(err, reply) {
 		if (reply) {
 			serverLog("REDIS reply ok");
 			var info = JSON.parse(reply);
 			serverLog(info);
-			if (info['username']===username) {
+			if (info[usernameKey]===username) {
 				serverLog(clientType + " sent username:");
 				serverLog(username);				
 				callback(info);
 			} else {
 				serverLog("username didn't match");
 				serverLog("Derived username");
-				serverLog(usernameFromUser);
+				serverLog(username);
 				serverLog("info username:");
-				serverLog(info['username']);
+				serverLog(info[usernameKey]);
 				callback(false);
 			}
 		} else {

@@ -91,6 +91,17 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 managerInterface.authenticateBrowser(mbody, function(browserInfo) {
                     console.log("*********** BROWSER CALLBACK *************");
                     console.log(mbody);
+                    if (browserInfo) {
+                        serverLog("AUTHENTICATED");
+                    } else {
+                        // Send back connection refused
+                        serverLog("AUTHENTICATION FAILED");
+                        sendMessage(ws, 'browserRefused', {
+                            errorMessage: 'Invalid browser credentials.',
+                            errorCode: 'ERR_INVALID_CREDENTIALS'
+                        });
+                        clientClosed();                        
+                    }
                 });
                 rosinstanceId = mbody.rosinstance;
                 orgId = mbody.org;

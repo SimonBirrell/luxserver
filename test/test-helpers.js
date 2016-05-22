@@ -16,6 +16,10 @@ var dummyRedisFakeStore = {},
             key = "robotlux:agent:" + key;
             dummyRedisFakeStore[key] = JSON.stringify(agentInfo);
         },
+        addBrowserInfo: function(key, browserInfo) {
+            key = "robotlux:browser:" + key;
+            dummyRedisFakeStore[key] = JSON.stringify(browserInfo);
+        },
         createClient: function() {
             console.log("Creating FAKE REDIS");
             return {
@@ -97,11 +101,32 @@ exports.openAgentSocketAndSend = function(message) {
 // Creates a pseudo-browser and authenticates it against the server.
 // Returns the websocket so further messages can be sent to server.
 //
-exports.authenticateBrowser = function(orgId) {
+exports.authenticateBrowser = function(orgId, user, secret) {
     orgId = (typeof orgId!=='undefined') ? orgId : 'theOrg'
+
+    user = (typeof user!=='undefined') ? user : 'user' + randomString();
+    secret = (typeof secret!=='undefined') ? secret : 'bar' + randomString();
+    //secret = (typeof secret!=='undefined') ? secret : 'bar';
+    var username = user + '@' + orgId + '.orgs.robotlux.com';
+    var browserInfo = {
+                        email: username,
+                        name: user,
+                        org_slug: orgId,
+                    };
+
+    dummyRedis.addBrowserInfo(secret, browserInfo);
+
+    // Test incorrect password by passing '****'
+    secret = (secret=='****') ? 'incorrect_password' : secret;
+
     let ws = this.openBrowserSocketAndSend({
         mtype:'browserConnect',
-        mbody:{org:orgId,secret:'bar',rosinstance:'baz'}
+        mbody:{
+                org: orgId,
+                user: user,
+                username: username,
+                secret: secret,
+                rosinstance: 'baz'}
     });
     
     return ws;

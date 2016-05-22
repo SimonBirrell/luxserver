@@ -2813,3 +2813,5 @@
 {"v":0,"level":30,"name":"newrelic","hostname":"simonbirrell.local","pid":31428,"time":"2016-05-22T09:21:38.706Z","msg":"Starting New Relic for Node.js connection process."}
 {"v":0,"level":30,"name":"newrelic","hostname":"simonbirrell.local","pid":31428,"time":"2016-05-22T09:21:48.763Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/1235565/applications/15000603","component":"new_relic_response"}
 {"v":0,"level":30,"name":"newrelic","hostname":"simonbirrell.local","pid":31428,"time":"2016-05-22T09:21:48.764Z","msg":"Connected to collector-203.newrelic.com:443 with agent run ID 65556385223506223.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"simonbirrell.local","pid":33015,"time":"2016-05-22T09:43:32.400Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"simonbirrell.local","pid":33281,"time":"2016-05-22T09:46:58.106Z","msg":"Starting New Relic for Node.js connection process."}

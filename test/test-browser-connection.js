@@ -23,6 +23,17 @@ describe('Browser Commands', function() {
         console.log("");
     });
     
+    // A browser that sends the wrong authentication info should be dropped.
+    //
+    it('doesnt allow a browser to connect if authentication info is wrong', function(done) {
+        let ws = T.authenticateBrowser('some_org', 'simon', '****');
+
+        T.trapMessage(ws, function(mtype, mbody) {
+            assert((mtype==='browserRefused'), 'Correct mtype');
+            done();
+         });
+    });
+    
     // A browser that authenticates correctly should receive a browserConnected message.
     //
     it('allows a browser to connect', function(done) {
