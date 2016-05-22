@@ -17,6 +17,14 @@ exports.connect = function() {
 }
 
 exports.authenticateAgent = function(mbody, callback) {
+	authenticateUniversal(mbody, callback, "agent");
+};
+
+exports.authenticateBrowser = function(mbody, callback) {
+	authenticateUniversal(mbody, callback, "browser");
+};
+
+function authenticateUniversal(mbody, callback, clientType) {
 	if (!redisClient) {
 		throw "REDIS not connected.";
 	}
@@ -32,23 +40,23 @@ exports.authenticateAgent = function(mbody, callback) {
 	}
 
 	// Interrogate REDIS for key
-	var key = "robotlux:agent:" + secret;
+	var key = "robotlux:" + clientType + ":" + secret;
 
 	redisClient.get(key, function(err, reply) {
 		if (reply) {
 			serverLog("REDIS reply ok");
-			var agentInfo = JSON.parse(reply);
-			serverLog(agentInfo);
-			if (agentInfo['username']===username) {
-				serverLog("agent sent username:");
+			var info = JSON.parse(reply);
+			serverLog(info);
+			if (info['username']===username) {
+				serverLog(clientType + " sent username:");
 				serverLog(username);				
-				callback(agentInfo);
+				callback(info);
 			} else {
 				serverLog("username didn't match");
 				serverLog("Derived username");
 				serverLog(usernameFromUser);
-				serverLog("agentInfo username:");
-				serverLog(agentInfo['username']);
+				serverLog("info username:");
+				serverLog(info['username']);
 				callback(false);
 			}
 		} else {
@@ -59,4 +67,6 @@ exports.authenticateAgent = function(mbody, callback) {
 	
 	return;
 }
+
+
 
