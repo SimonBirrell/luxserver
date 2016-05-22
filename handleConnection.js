@@ -90,6 +90,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
             } else if (mtype==='browserConnect') {
                 managerInterface.authenticateBrowser(mbody, function(browserInfo) {
                     console.log("*********** BROWSER CALLBACK *************");
+                    console.log(mbody);
                 });
                 rosinstanceId = mbody.rosinstance;
                 orgId = mbody.org;
