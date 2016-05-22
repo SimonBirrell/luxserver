@@ -47,7 +47,7 @@ exports.handleUniversalConnection = function connection(ws) {
     //      logonClientType - 'agent' or 'browser'
     //
     function logon(mbody, logonClientType) {
-        serverLog("logon and create agent...");
+        serverLog("logon and create " + logonClientType + "...");
          
         clientType = logonClientType; 
         if (clientType==='agent') {

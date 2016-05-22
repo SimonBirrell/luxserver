@@ -68,7 +68,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 if (typeof clientAuthenticated!=='undefined') {
                     managerInterface.authenticateAgent(mbody, function(agentInfo) {
                         if (agentInfo) {
-                            serverLog("AUTHENTICATED");
+                            serverLog("AUTHENTICATED AGENT");
                             // Make up login info combining client-sent data with
                             // trusted data from LuxManager.
                             var logonInfo = getLogonInfo(mbody, agentInfo);
@@ -78,7 +78,7 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                             clientAuthenticated(logonInfo, 'agent', agentInfo);
                         } else {
                             // Send back connection refused
-                            serverLog("AUTHENTICATION FAILED");
+                            serverLog("AUTHENTICATION AGENT FAILED");
                             sendMessage(ws, 'agentRefused', {
                                 errorMessage: 'Invalid agent credentials.',
                                 errorCode: 'ERR_INVALID_CREDENTIALS'
@@ -89,13 +89,11 @@ exports.handleConnection = function(ws, clientType, interpretCommand, clientAuth
                 }
             } else if (mtype==='browserConnect') {
                 managerInterface.authenticateBrowser(mbody, function(browserInfo) {
-                    console.log("*********** BROWSER CALLBACK *************");
-                    console.log(mbody);
                     if (browserInfo) {
-                        serverLog("AUTHENTICATED");
+                        serverLog("AUTHENTICATED BROWSER");
                     } else {
                         // Send back connection refused
-                        serverLog("AUTHENTICATION FAILED");
+                        serverLog("AUTHENTICATION BROWSER FAILED");
                         sendMessage(ws, 'browserRefused', {
                             errorMessage: 'Invalid browser credentials.',
                             errorCode: 'ERR_INVALID_CREDENTIALS'

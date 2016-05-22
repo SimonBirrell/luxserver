@@ -35,8 +35,7 @@ function authenticateUniversal(mbody, callback, clientType) {
 	if ((!username)||(!secret)) {
 		serverLog("Username and/or secret missing.");
 		serverLog(mbody);
-		var invalidInfo = {error: "Missing user or secret"};
-		return invalidInfo; 
+		callback(false);
 	}
 
 	// Interrogate REDIS for key

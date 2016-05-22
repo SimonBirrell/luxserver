@@ -118,15 +118,18 @@ exports.authenticateBrowser = function(orgId, user, secret) {
 
     // Test incorrect password by passing '****'
     secret = (secret=='****') ? 'incorrect_password' : secret;
-
-    let ws = this.openBrowserSocketAndSend({
-        mtype:'browserConnect',
-        mbody:{
+    var dataToSend = {
                 org: orgId,
                 user: user,
                 username: username,
                 secret: secret,
-                rosinstance: 'baz'}
+                rosinstance: 'baz'
+        };
+
+
+    let ws = this.openBrowserSocketAndSend({
+        mtype: 'browserConnect',
+        mbody: (secret!=='no_auth') ? dataToSend : {}
     });
     
     return ws;
